@@ -1,0 +1,29 @@
+RewriteEngine On
+# The following rule tells Apache that if the requested filename
+# exists, simply serve it.
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [L]
+# The following rewrites all other queries to index.php. The 
+# condition ensures that if you are using Apache aliases to do
+# mass virtual hosting or installed the project in a subdirectory,
+# the base path will be prepended to allow proper resolution of
+# the index.php file; it will work in non-aliased environments
+# as well, providing a safe, one-size fits all solution.
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
+RewriteRule ^(.*)$ %{ENV:BASE}/index.php [L]
+# php_flag output_buffering Off
+# php_value xdebug.idekey netbeans-xdebug
+
+php_flag xdebug.remote_autostart on
+php_flag xdebug.remote_enable on
+php_flag xdebug.remote_enable on
+php_value xdebug.remote_handler dbgp
+# xdebug.remote_host="localhost:81"
+php_value xdebug.remote_host 192.168.99.1
+# xdebug.remote_connect_back=1
+php_value xdebug.remote_port 9001
+php_value xdebug.remote_mode req
+php_value xdebug.idekey netbeans-xdebug
